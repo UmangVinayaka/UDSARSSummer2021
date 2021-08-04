@@ -1,0 +1,38 @@
+import Bio
+
+from Bio import SeqIO
+
+import pandas
+#Line 14 to 20 is to add the accession id from the 4 regions held in the csv to the corresponding lists
+namesofcolumns = ['Northeast', 'West', 'Midwest', 'South']
+table = pandas.read_csv('C:/covid/Total100AccessionIDlist-withheaders.csv')
+#print(table)
+northeast = table.Northeast.tolist()
+west = table.West.tolist()
+midwest = table.Midwest.tolist()
+south = table.South.tolist()
+
+
+originalwithoutregion = r"C:/covid/statelabeledMSA.fasta"
+correctedwithregion = r"C:/covid/statelabeledMSA-corrected.fasta"
+
+
+#Basically reads the file and finds the id of each sequence (which is the accession id) so that it can check which region the id is from by checking the lists and then assigns the corresponding region to the name
+with open(originalwithoutregion) as original, open(correctedwithregion, 'w') as correct:
+    sequences = SeqIO.parse(originalwithoutregion, 'fasta')
+    for sequence in sequences:
+        
+        if sequence.id in northeast:
+            sequence.id = ('Northeast: ')
+        if sequence.id in west:
+            sequence.id = ('West: ')
+        if sequence.id in midwest:
+            sequence.id = ('Midwest: ')
+        if sequence.id in south:
+            sequence.id = ('South: ')
+            
+            
+        print (sequence.id)            
+        SeqIO.write(sequence, correct, 'fasta')
+        
+        
